@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <!--
+  ╔══════════════════════════════════════════╗
+  ║  NARVILLA × قاعة المناسبات              ║
+  ║  عدّل قسم CONFIG أسفله لكل قاعة         ║
+  ╚══════════════════════════════════════════╝
+  -->
+  <title>Narvilla نارفيلا</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  <style>
+    /* ══ GLOBAL TOKENS ══ */
+    :root {
+      --ink:        #1C1208;
+      --gold:       #8A6420;
+      --gold-light: #B8900A;
+      --gold-pale:  #D4B060;
+      --cream:      #D0C0A8;
+      --card:       #EDE0CC;
+      --mist:       #C8B898;
+      --text:       #2C2010;
+      --text-muted: #7A6A50;
+      --border:     #BCA880;
+      --sh:         0 3px 12px rgba(28,18,8,.14);
+
+      /* per-category (default = signature warmth) */
+      --cat-dark:    #2C1A0A;
+      --cat-primary: #A07040;
+      --cat-bg:      #F8EEE0;
+      --cat-accent:  #C09060;
+      --cat-border:  #D4B890;
+
+      --r-sm: 8px; --r-md: 14px; --r-lg: 20px;
+    }
+
+    /* ── CATEGORY THEMES ── */
+    body[data-cat="signature"]  { --cat-dark:#2C1A0A; --cat-primary:#A07040; --cat-bg:#F8EEE0; --cat-accent:#C09060; --cat-border:#D4B890; }
+    body[data-cat="crystal"]    { --cat-dark:#083040; --cat-primary:#2878A0; --cat-bg:#E4F4F8; --cat-accent:#3898C0; --cat-border:#8CCCE0; }
+    body[data-cat="hd"]         { --cat-dark:#281800; --cat-primary:#A07800; --cat-bg:#FFF4D8; --cat-accent:#C09A00; --cat-border:#D8BE60; }
+    body[data-cat="custom"]     { --cat-dark:#1C0A30; --cat-primary:#683898; --cat-bg:#F0E8FC; --cat-accent:#8858B8; --cat-border:#C4A8E8; }
+    body[data-cat="custom-hd"]  { --cat-dark:#280818; --cat-primary:#982058; --cat-bg:#FCE8F2; --cat-accent:#B83878; --cat-border:#E898C8; }
+
+    /* ══ RESET ══ */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+
+    body {
+      font-family: 'Cairo', 'Segoe UI', Arial, sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      direction: rtl;
+      text-align: right;
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+      transition: background 0.3s;
+    }
+
+    /* ══ HEADER ══ */
+    .app-header {
+      position: sticky; top: 0; z-index: 50;
+      background: var(--cat-dark, var(--ink));
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 11px 16px;
+      border-bottom: 2px solid var(--gold);
+      transition: background 0.4s;
+    }
+    .h-logo {
+      font-family: 'Cairo', serif;
+      font-weight: 900;
+      font-size: 1.35rem;
+      letter-spacing: .22em;
+      color: var(--gold-pale);
+      text-align: center;
+      line-height: 1;
+    }
+    .h-logo small {
+      display: block;
+      font-size: .58rem;
+      letter-spacing: .05em;
+      color: rgba(212,176,96,.55);
+      font-weight: 400;
+      margin-top: 2px;
+    }
+    .back-btn {
+      background: none;
+      border: 1px solid rgba(212,176,96,.4);
+      color: var(--gold-pale);
+      padding: 7px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: .8rem;
+      font-family: 'Cairo', inherit;
+      font-weight: 600;
+      transition: background .15s;
+    }
+    .back-btn:hover { background: rgba(212,176,96,.15); }
+    .back-btn.gone { visibility:hidden; pointer-events:none; }
+
+    /* ══ VIEWS ══ */
+    .view { display:none; min-height:calc(100vh - 56px); }
+    .view.active { display:block; animation:vIn .22s ease; }
+    @keyframes vIn { from{opacity:0;transform:translateX(-10px)} to{opacity:1;transform:translateX(0)} }
+
+    /* ══ HOME HERO ══ */
+    .home-hero {
+      background: var(--ink);
+      padding: 36px 20px 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    .home-hero::before {
+      content:'';
+      position:absolute; inset:0;
+      background: radial-gradient(ellipse at 20% 60%, rgba(138,100,32,.18) 0%, transparent 65%);
+      pointer-events:none;
+    }
+    .hero-eyebrow {
+      font-size: .7rem;
+      color: var(--gold-pale);
+      letter-spacing: .2em;
+      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .hero-eyebrow::after {
+      content:''; flex:1; max-width:36px;
+      height:1px; background:rgba(212,176,96,.4);
+    }
+    .hero-brand {
+      font-family: 'Cairo', serif;
+      font-weight: 900;
+      font-size: 2.4rem;
+      letter-spacing: .22em;
+      color: var(--gold-pale);
+      line-height: 1.1;
+    }
+    .hero-hall { font-size:.95rem; color:rgba(255,255,255,.75); margin:4px 0 14px; font-weight:600; }
+    .hero-divider { width:40px; height:2px; background:var(--gold); margin-bottom:14px; }
+    .hero-desc { font-size:.88rem; color:rgba(255,255,255,.65); line-height:1.75; max-width:320px; }
+
+    /* ══ SECTION LABEL ══ */
+    .sec-label {
+      padding: 20px 18px 10px;
+      font-size: .75rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      letter-spacing:.04em;
+    }
+
+    /* ══ CATEGORIES GRID ══ */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      padding: 0 14px 24px;
+    }
+    .cat-card {
+      background: var(--card);
+      border-radius: var(--r-md);
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: var(--sh);
+      border: 1px solid var(--border);
+      transition: transform .15s, box-shadow .15s;
+    }
+    .cat-card:active { transform:scale(.97); }
+    .cat-card-img {
+      position: relative;
+      aspect-ratio: 3/4;
+      overflow: hidden;
+    }
+    .cat-card-img img {
+      width:100%; height:100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .3s;
+    }
+    .cat-card:hover .cat-card-img img { transform:scale(1.04); }
+    .cat-sale-tag {
+      position: absolute; top:9px; right:9px;
+      background: rgba(28,18,8,.82);
+      color: var(--gold-pale);
+      font-size: .62rem;
+      padding: 3px 9px;
+      border-radius: 20px;
+      border: 1px solid rgba(212,176,96,.4);
+      font-weight: 700;
+    }
+    .cat-body { padding:11px 13px 13px; }
+    .cat-name {
+      font-family: 'Cairo', serif;
+      font-weight: 900;
+      font-size: .9rem;
+      color: var(--ink);
+      margin-bottom: 3px;
+    }
+    .cat-desc { font-size:.7rem; color:var(--text-muted); line-height:1.5; }
+
+    /* ══ CATEGORY HEADER ══ */
+    .pv-header {
+      background: var(--cat-dark);
+      padding: 24px 18px;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 2px solid var(--cat-primary);
+      transition: background 0.4s;
+    }
+    .pv-header::after {
+      content:''; position:absolute; bottom:0; left:0;
+      width:120px; height:120px;
+      background: radial-gradient(circle, rgba(255,255,255,.08) 0%, transparent 70%);
+    }
+    .pv-h-name {
+      font-family: 'Cairo', serif;
+      font-weight: 900;
+      font-size: 1.5rem;
+      letter-spacing: .08em;
+      color: var(--gold-pale);
+      margin-bottom: 5px;
+    }
+    .pv-h-desc { font-size:.82rem; color:rgba(255,255,255,.65); line-height:1.55; max-width:280px; }
+
+    /* ══ PRODUCTS GRID ══ */
+    .prod-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      padding: 18px 14px 24px;
+    }
+    .prod-card {
+      background: var(--card);
+      border-radius: var(--r-md);
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: var(--sh);
+      border: 1px solid var(--border);
+      transition: transform .15s;
+    }
+    .prod-card:active { transform:scale(.97); }
+    .prod-card-img {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+    }
+    .prod-card-img img {
+      width:100%; height:100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .3s;
+    }
+    .prod-card:hover .prod-card-img img { transform:scale(1.04); }
+    .prod-body { padding:9px 11px 11px; }
+    .prod-name { font-weight:700; font-size:.85rem; color:var(--ink); margin-bottom:2px; }
+    .prod-code { font-size:.67rem; color:var(--text-muted); direction:ltr; text-align:left; }
+
+    /* ══ PRODUCT DETAIL ══ */
+    .pd-img {
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      background: var(--mist);
+    }
+    .pd-img img { width:100%; height:100%; object-fit:cover; display:block; }
+    .pd-body {
+      padding: 18px 18px 16px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+    .pd-pill {
+      display: inline-block;
+      font-size: .65rem;
+      color: var(--cat-primary);
+      background: rgba(138,100,32,.1);
+      border: 1px solid var(--cat-primary);
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 9px;
+      font-weight: 700;
+    }
+    .pd-name {
+      font-family: 'Cairo', serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--ink);
+      margin-bottom: 2px;
+    }
+    .pd-code { font-size:.7rem; color:var(--text-muted); margin-bottom:11px; direction:ltr; text-align:left; }
+    .pd-desc {
+      font-size:.88rem; color:var(--text); line-height:1.7;
+      padding-bottom:15px; border-bottom:1px solid var(--border); margin-bottom:15px;
+    }
+    .pd-pt { font-size:.76rem; color:var(--text-muted); font-weight:700; margin-bottom:9px; }
+
+    /* Price selector */
+    .price-row { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+    .price-opt {
+      border: 2px solid var(--border);
+      border-radius: var(--r-sm);
+      padding: 11px;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color .15s, background .15s;
+      position: relative;
+    }
+    .price-opt.sel { border-color:var(--cat-primary); background:rgba(138,100,32,.07); }
+    .price-opt.off { opacity:.35; cursor:not-allowed; }
+    .price-opt-label { font-size:.7rem; color:var(--text-muted); margin-bottom:3px; }
+    .price-opt-val { font-family:'Cairo',serif; font-size:1.1rem; font-weight:900; color:var(--ink); }
+    .price-opt-cur { font-size:.67rem; color:var(--text-muted); }
+    .price-opt-ck {
+      position:absolute; top:5px; right:5px;
+      width:15px; height:15px; border-radius:50%;
+      background:var(--cat-primary);
+      display:none; align-items:center; justify-content:center;
+      font-size:.55rem; color:white;
+    }
+    .price-opt.sel .price-opt-ck { display:flex; }
+    .pd-actions {
+      padding:14px 18px 20px;
+      background:var(--cream);
+      display:flex; flex-direction:column; gap:9px;
+    }
+
+    /* ══ BUTTONS ══ */
+    .btn {
+      display: flex; align-items:center; justify-content:center; gap:7px;
+      width: 100%; padding:13px 18px; border:none; border-radius:25px;
+      font-size: .92rem; font-family:'Cairo',inherit; font-weight:700;
+      cursor: pointer; transition:all .15s;
+    }
+    .btn-gold { background:var(--cat-primary); color:white; }
+    .btn-gold:hover { background:var(--cat-dark); }
+    .btn-out { background:transparent; color:var(--cat-primary); border:2px solid var(--cat-primary); }
+    .btn-out:hover { background:rgba(138,100,32,.1); }
+    .btn-wa { background:#25D366; color:white; }
+    .btn-wa:hover { background:#1aab54; }
+    .btn-ghost { background:transparent; color:var(--text-muted); border:1px solid var(--border); }
+
+    /* ══ ADDONS MODAL ══ */
+    .modal-bg {
+      position:fixed; inset:0;
+      background:rgba(28,18,8,.65);
+      z-index:100;
+      display:none; align-items:flex-end;
+    }
+    .modal-bg.open { display:flex; }
+    .modal-sheet {
+      width:100%; background:var(--card);
+      border-radius:20px 20px 0 0;
+      max-height:82vh; overflow-y:auto;
+      animation:shUp .24s ease;
+    }
+    @keyframes shUp { from{transform:translateY(50px);opacity:0} to{transform:translateY(0);opacity:1} }
+    .modal-drag { width:34px; height:4px; background:var(--border); border-radius:2px; margin:10px auto 0; }
+    .modal-top {
+      padding:14px 18px; border-bottom:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .modal-title { font-family:'Cairo',serif; font-weight:900; font-size:.98rem; }
+    .modal-close { background:none; border:none; font-size:1.2rem; cursor:pointer; color:var(--text-muted); padding:4px; }
+    .addon-row {
+      display:flex; align-items:center; gap:13px;
+      padding:14px 18px; border-bottom:1px solid var(--border);
+      cursor:pointer; transition:background .1s;
+    }
+    .addon-row:hover { background:var(--mist); }
+    .addon-ck {
+      width:21px; height:21px; border:2px solid var(--border);
+      border-radius:5px; display:flex; align-items:center; justify-content:center;
+      flex-shrink:0; transition:all .15s;
+    }
+    .addon-ck.on { background:var(--cat-primary); border-color:var(--cat-primary); color:white; font-size:.75rem; }
+    .addon-info { flex:1; }
+    .addon-name { font-size:.88rem; font-weight:700; color:var(--ink); margin-bottom:1px; }
+    .addon-desc { font-size:.7rem; color:var(--text-muted); }
+    .addon-price { font-size:.82rem; font-weight:700; color:var(--cat-primary); flex-shrink:0; }
+    .modal-foot { padding:14px 18px; background:var(--cream); border-top:1px solid var(--border); }
+
+    /* ══ STEP DOTS ══ */
+    .step-dots {
+      display:flex; justify-content:center; gap:6px;
+      padding:9px 0; background:var(--cream); border-bottom:1px solid var(--border);
+    }
+    .sd { width:7px; height:7px; border-radius:50%; background:var(--border); transition:all .2s; }
+    .sd.on { background:var(--cat-primary); width:18px; border-radius:4px; }
+
+    /* ══ CUSTOMIZE ══ */
+    .cz-wrap { padding:18px; }
+    .cz-step { font-size:.7rem; color:var(--cat-primary); font-weight:700; margin-bottom:3px; }
+    .cz-title { font-family:'Cairo',serif; font-weight:900; font-size:1.1rem; color:var(--ink); margin-bottom:18px; }
+    .f-block { margin-bottom:20px; }
+    .f-label { display:block; font-size:.85rem; font-weight:700; color:var(--ink); margin-bottom:5px; }
+    .f-hint { font-size:.72rem; color:var(--text-muted); margin-bottom:7px; line-height:1.6; }
+    .f-textarea {
+      width:100%; min-height:95px;
+      padding:11px 13px;
+      border:2px solid var(--border);
+      border-radius:var(--r-sm);
+      font-family:'Cairo',inherit; font-size:.88rem; color:var(--text);
+      background:var(--card); resize:none;
+      transition:border-color .15s; direction:rtl;
+    }
+    .f-textarea:focus { outline:none; border-color:var(--cat-primary); }
+    .upload-zone {
+      border:2px dashed var(--border);
+      border-radius:var(--r-md);
+      padding:26px 18px; text-align:center; cursor:pointer;
+      background:rgba(138,100,32,.04); transition:all .15s;
+    }
+    .upload-zone:hover { background:rgba(138,100,32,.09); border-color:var(--cat-primary); }
+    .upload-ic {
+      width:46px; height:46px; border-radius:50%;
+      background:rgba(138,100,32,.12);
+      display:flex; align-items:center; justify-content:center;
+      margin:0 auto 9px; font-size:1.25rem;
+    }
+    .upload-txt { font-size:.82rem; color:var(--text-muted); }
+    .upload-txt strong { color:var(--cat-primary); }
+    .photos-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:7px; margin-top:11px; }
+    .photo-th { aspect-ratio:1; border-radius:var(--r-sm); overflow:hidden; position:relative; background:var(--mist); }
+    .photo-th img { width:100%; height:100%; object-fit:cover; }
+    .photo-rm {
+      position:absolute; top:3px; right:3px;
+      width:19px; height:19px; background:rgba(28,18,8,.72);
+      border:none; border-radius:50%; color:white;
+      font-size:.6rem; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+    }
+
+    /* ══ ALERTS ══ */
+    .alert {
+      border-radius:var(--r-sm); padding:11px 13px;
+      margin-bottom:15px; font-size:.82rem; line-height:1.6;
+      display:flex; gap:9px; align-items:flex-start;
+    }
+    .alert-ic { font-size:.95rem; flex-shrink:0; margin-top:1px; }
+    .alert-info  { background:rgba(40,120,160,.1); border:1px solid rgba(40,120,160,.4); color:#083040; }
+    .alert-grave { background:rgba(152,32,88,.08); border:1px solid rgba(152,32,88,.3); color:#2C0818; }
+
+    /* ══ PREVIEW ══ */
+    .pvw-wrap { padding:18px; }
+    .pvw-h { font-family:'Cairo',serif; font-weight:900; font-size:1.1rem; color:var(--ink); margin-bottom:3px; }
+    .pvw-sh { font-size:.78rem; color:var(--text-muted); margin-bottom:18px; }
+    .pvw-card {
+      background:var(--card); border-radius:var(--r-md);
+      border:1px solid var(--border); overflow:hidden; margin-bottom:12px;
+    }
+    .pvw-ch {
+      padding:9px 15px; background:var(--mist);
+      font-size:.7rem; font-weight:700; color:var(--text-muted);
+      border-bottom:1px solid var(--border);
+    }
+    .pvw-row {
+      display:flex; align-items:flex-start; justify-content:space-between;
+      padding:9px 15px; border-bottom:1px solid var(--border);
+      font-size:.83rem; gap:10px;
+    }
+    .pvw-row:last-child { border-bottom:none; }
+    .pvw-rl { color:var(--text-muted); flex-shrink:0; }
+    .pvw-rv { font-weight:700; color:var(--ink); text-align:left; }
+    .pvw-text { padding:11px 15px; font-size:.84rem; color:var(--ink); line-height:1.7; font-style:italic; background:var(--cream); }
+    .pvw-photos { padding:11px 15px; display:flex; gap:7px; flex-wrap:wrap; }
+    .pvw-ph-th { width:56px; height:56px; border-radius:6px; overflow:hidden; background:var(--mist); }
+    .pvw-ph-th img { width:100%; height:100%; object-fit:cover; }
+    .pvw-no-ph { padding:11px 15px; font-size:.78rem; color:var(--text-muted); }
+    .svc-pill { display:inline-block; padding:2px 10px; border-radius:20px; font-size:.7rem; font-weight:700; }
+    .pill-r { background:rgba(40,160,80,.1); color:#0A3A18; border:1px solid rgba(40,160,80,.3); }
+    .pill-b { background:rgba(138,100,32,.1); color:var(--gold); border:1px solid rgba(138,100,32,.3); }
+    .pvw-actions { padding:0 18px 24px; display:flex; flex-direction:column; gap:9px; }
+
+    /* ══ CONFIRM ══ */
+    .cf-wrap { padding:30px 18px; text-align:center; }
+    .cf-ring {
+      width:72px; height:72px; border-radius:50%;
+      background:rgba(138,100,32,.12);
+      border:2px solid var(--cat-primary);
+      display:flex; align-items:center; justify-content:center;
+      margin:0 auto 15px; font-size:1.9rem;
+    }
+    .cf-title { font-family:'Cairo',serif; font-weight:900; font-size:1.25rem; color:var(--ink); margin-bottom:7px; }
+    .cf-desc { font-size:.83rem; color:var(--text-muted); line-height:1.7; max-width:270px; margin:0 auto 22px; }
+    .cf-wa-note {
+      background:rgba(37,211,102,.07);
+      border:1px solid rgba(37,211,102,.3);
+      border-radius:var(--r-sm); padding:11px 13px;
+      font-size:.78rem; color:#1a5c37; margin-bottom:18px; text-align:right; line-height:1.6;
+    }
+    .cf-actions { display:flex; flex-direction:column; gap:9px; }
+
+    /* ══ FOOTER ══ */
+    .pg-footer {
+      text-align:center; padding:18px;
+      font-size:.7rem; color:var(--text-muted);
+      border-top:1px solid var(--border); margin-top:8px;
+    }
+
+    /* ══ RESPONSIVE ══ */
+    @media(max-width:340px) { .cat-grid, .prod-grid { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header class="app-header" id="appHeader">
+  <button class="back-btn gone" id="backBtn" onclick="goBack()">&#8592; رجوع</button>
+  <div class="h-logo">NARVILLA <small id="hHall"></small></div>
+  <div style="width:72px"></div>
+</header>
+
+<!-- ══ VIEW: HOME ══ -->
+<div class="view active" id="v-home">
+  <div class="home-hero">
+    <div class="hero-eyebrow">مرايا الأفراح والمناسبات</div>
+    <div class="hero-brand">نارفيلا</div>
+    <div class="hero-hall" id="heroHall"></div>
+    <div class="hero-divider"></div>
+    <div class="hero-desc" id="heroDesc"></div>
+  </div>
+  <div class="sec-label">اختر فئة المنتج</div>
+  <div class="cat-grid" id="catGrid"></div>
+  <div class="pg-footer" id="homeFooter"></div>
+</div>
+
+<!-- ══ VIEW: PRODUCTS ══ -->
+<div class="view" id="v-products">
+  <div class="pv-header">
+    <div class="pv-h-name" id="pvhName"></div>
+    <div class="pv-h-desc" id="pvhDesc"></div>
+  </div>
+  <div class="prod-grid" id="prodGrid"></div>
+</div>
+
+<!-- ══ VIEW: PRODUCT DETAIL ══ -->
+<div class="view" id="v-product">
+  <div class="pd-img" id="pdImg"></div>
+  <div class="pd-body">
+    <div class="pd-pill" id="pdPill"></div>
+    <div class="pd-name" id="pdName"></div>
+    <div class="pd-code" id="pdCode"></div>
+    <div class="pd-desc" id="pdDesc"></div>
+    <div class="pd-pt">اختر نوع الخدمة</div>
+    <div class="price-row" id="priceRow"></div>
+  </div>
+  <div class="pd-actions">
+    <button class="btn btn-out" onclick="openAddons()">🎁&nbsp; إضافات اختيارية</button>
+    <button class="btn btn-gold" onclick="proceedToCustomize()">اختيار هذا المنتج →</button>
+  </div>
+</div>
+
+<!-- ══ VIEW: CUSTOMIZE ══ -->
+<div class="view" id="v-customize">
+  <div class="step-dots"><div class="sd on"></div><div class="sd"></div><div class="sd"></div></div>
+  <div class="cz-wrap">
+    <div class="cz-step">الخطوة 1 من 2</div>
+    <div class="cz-title">تخصيص المرآة</div>
+    <div id="svcAlert"></div>
+    <div class="f-block">
+      <label class="f-label">النص الذي تريده على المرآة</label>
+      <div class="f-hint">اكتب الأسماء، التاريخ، أو أي نص تريد إضافته.</div>
+      <textarea class="f-textarea" id="mirrorText" placeholder="مثال: أحمد ✦ نورة&#10;١٥ ربيع الأول ١٤٤٦" rows="4"></textarea>
+    </div>
+    <div class="f-block">
+      <label class="f-label">صور مرجعية (اختياري)</label>
+      <div class="f-hint">أرفق صوراً توضح الذوق أو التصميم المطلوب.</div>
+      <div class="upload-zone" onclick="document.getElementById('photoInput').click()">
+        <input type="file" id="photoInput" accept="image/*" multiple style="display:none" onchange="handlePhotos(event)">
+        <div class="upload-ic">📷</div>
+        <div class="upload-txt"><strong>اضغط لإرفاق صور</strong><br>PNG · JPG · WEBP</div>
+      </div>
+      <div class="photos-grid" id="photosGrid"></div>
+    </div>
+    <button class="btn btn-gold" onclick="goToPreview()">معاينة الطلب →</button>
+  </div>
+</div>
+
+<!-- ══ VIEW: PREVIEW ══ -->
+<div class="view" id="v-preview">
+  <div class="step-dots"><div class="sd"></div><div class="sd on"></div><div class="sd"></div></div>
+  <div class="pvw-wrap">
+    <div class="pvw-h">مراجعة الطلب</div>
+    <div class="pvw-sh">تأكد من جميع التفاصيل</div>
+    <div id="previewContent"></div>
+  </div>
+  <div class="pvw-actions">
+    <button class="btn btn-gold" onclick="goToConfirm()">تأكيد الطلب →</button>
+    <button class="btn btn-ghost" onclick="goBack()">← تعديل</button>
+  </div>
+</div>
+
+<!-- ══ VIEW: CONFIRM ══ -->
+<div class="view" id="v-confirm">
+  <div class="step-dots"><div class="sd"></div><div class="sd"></div><div class="sd on"></div></div>
+  <div class="cf-wrap">
+    <div class="cf-ring">🪞</div>
+    <div class="cf-title">طلبك جاهز للإرسال</div>
+    <div class="cf-desc">سيُرسل طلبك كاملاً عبر واتساب لفريق نارفيلا للتأكيد والمتابعة.</div>
+    <div class="cf-wa-note" id="cfNote"></div>
+    <div class="cf-actions">
+      <button class="btn btn-wa" onclick="sendToWhatsApp()">📲&nbsp; إرسال الطلب عبر واتساب</button>
+      <button class="btn btn-ghost" onclick="goBack()">← مراجعة الطلب</button>
+      <button class="btn btn-ghost" onclick="startOver()" style="margin-top:4px">🔄 طلب جديد</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADDONS MODAL ══ -->
+<div class="modal-bg" id="addonsModal">
+  <div class="modal-sheet">
+    <div class="modal-drag"></div>
+    <div class="modal-top">
+      <span class="modal-title">الإضافات الاختيارية</span>
+      <button class="modal-close" onclick="closeAddons()">✕</button>
+    </div>
+    <div id="addonsList"></div>
+    <div class="modal-foot">
+      <button class="btn btn-gold" onclick="closeAddons()">تأكيد الإضافات ✓</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  ⚙️  CONFIG — عدّل هذا القسم لكل قاعة
+// ══════════════════════════════════════════════
+const CFG = {
+  hallName: "قاعة الأمير",        // ← اسم القاعة
+  whatsapp: "966500000000",        // ← رقم واتساب نارفيلا (بدون +)
+  currency: "ر.س",
+  heroDesc: "مرايا نارفيلا تحوّل لحظات الفرح إلى ذكريات تبقى إلى الأبد. كل مرآة تُكمل جمال مناسبتك وتمنحك صورة لا تُنسى تُعبّر عن أسمى اللحظات. نقدّم خيارَي التأجير لليلة الاحتفال، والشراء لاقتناء ذكرى خاصة تدوم عمراً.",
+};
+
+// ══════════════════════════════════════════════
+//  📦  DATA — المنتجات والفئات
+// ══════════════════════════════════════════════
+const CATS = [
+  {
+    id: 'signature',
+    name: 'Narvilla Signature',
+    desc: 'تصميم ثابت مع حفر كتابة وملصق أسماء وتاريخ متجدد لكل عميل',
+    saleOnly: false,
+    img: 'images/signature-cat.jpg',
+    products: [
+      { id:'sig-s', code:'NAR-SIG-S', name:'سيجنتشر ستاندرد',
+        img:'images/signature-1.jpg',
+        desc:'مرآة بتصميم كلاسيكي راقٍ مع إطار ذهبي مطفأ. تأتي مع ملصق شفاف قابل للإزالة يُطبع عليه اسما العروسين وتاريخ الحفل.',
+        rent:250, buy:850 },
+      { id:'sig-m', code:'NAR-SIG-M', name:'سيجنتشر ميدل',
+        img:'images/signature-2.jpg',
+        desc:'حجم أكبر بإطار أوسع وتفاصيل حفر إضافية على الجوانب. مناسبة للقاعات المتوسطة والكبيرة.',
+        rent:350, buy:1100 },
+      { id:'sig-g', code:'NAR-SIG-G', name:'سيجنتشر جراند',
+        img:'images/signature-cat.jpg',
+        desc:'المرآة الكبيرة المثالية لاستقبال العروس. تصميم جراند بإطار منقوش وحجم بارز يناسب القاعات الملكية.',
+        rent:480, buy:1500 },
+    ]
+  },
+  {
+    id: 'crystal',
+    name: 'Narvilla Crystal',
+    desc: 'زجاج كريستال 6 ملم مع تقنية رش الرمل وحفر كتابة',
+    saleOnly: false,
+    img: 'images/crystal-cat.jpg',
+    products: [
+      { id:'cry-s', code:'NAR-CRY-S', name:'كريستال كلير',
+        img:'images/crystal-1.jpg',
+        desc:'مرآة بزجاج كريستال 6 ملم فاخر مع نقوش رش الرمل الدقيقة وحفر الأسماء والبيانات بتقنية عالية.',
+        rent:320, buy:980 },
+      { id:'cry-p', code:'NAR-CRY-P', name:'كريستال برستيج',
+        img:'images/crystal-cat.jpg',
+        desc:'تصميم برستيج بكريستال مزدوج الصفائح مع تقنية حفر متقدمة وتدرج رش الرمل الاستثنائي.',
+        rent:420, buy:1300 },
+    ]
+  },
+  {
+    id: 'hd',
+    name: 'Signature HD',
+    desc: 'مرآة بتصميم ثابت مع حفر وإضاءة دافئة',
+    saleOnly: false,
+    img: 'images/hd-cat.jpg',
+    products: [
+      { id:'hd-l', code:'NAR-HD-L', name:'إتش دي لايت',
+        img:'images/hd-1.jpg',
+        desc:'مرآة فاخرة بتصميم ثابت محفور مع إضاءة LED دافئة مدمجة في الإطار تضيف جواً رومانسياً خاصاً للحفل.',
+        rent:420, buy:1250 },
+      { id:'hd-lx', code:'NAR-HD-LX', name:'إتش دي لوكس',
+        img:'images/hd-2.jpg',
+        desc:'النسخة اللوكس مع إضاءة أوسع وشكل بيضاوي فاخر وإطار ذهبي مزخرف. الأجمل للتصوير.',
+        rent:580, buy:1700 },
+    ]
+  },
+  {
+    id: 'custom',
+    name: 'Custom',
+    desc: 'تصميم خاص بالكامل حسب طلب العميل — للبيع فقط',
+    saleOnly: true,
+    img: 'images/custom-cat.jpg',
+    products: [
+      { id:'cus-s', code:'NAR-CUS-S', name:'كاستوم ستاندرد',
+        img:'images/custom-1.jpg',
+        desc:'تصميم كاملاً حسب رغبتك مع حفر دائم للاحتفاظ بها كذكرى. يشمل التصميم والتنفيذ من الصفر.',
+        rent:null, buy:1600 },
+      { id:'cus-p', code:'NAR-CUS-P', name:'كاستوم بريميوم',
+        img:'images/custom-2.jpg',
+        desc:'تصميم بريميوم مخصص بالكامل مع حفر دقيق وإطار مميز، للاحتفاظ بها كتحفة فنية خالدة.',
+        rent:null, buy:2400 },
+    ]
+  },
+  {
+    id: 'custom-hd',
+    name: 'Custom HD',
+    desc: 'تصميم خاص بالكامل مع إضاءة — للبيع فقط',
+    saleOnly: true,
+    img: 'images/custom-hd-cat.jpg',
+    products: [
+      { id:'chd-l', code:'NAR-CHD-L', name:'كاستوم إتش دي لايت',
+        img:'images/custom-hd-1.jpg',
+        desc:'تصميم خاص كاملاً مع إضاءة LED دافئة وحفر دائم للاحتفاظ بها كذكرى استثنائية.',
+        rent:null, buy:2200 },
+      { id:'chd-lx', code:'NAR-CHD-LX', name:'كاستوم إتش دي لوكس',
+        img:'images/custom-hd-2.jpg',
+        desc:'القمة في التميز — تصميم فريد مع إضاءة RGB ذكية وحفر متقدم بأعلى جودة وتفصيل.',
+        rent:null, buy:3200 },
+    ]
+  }
+];
+
+const ADDONS = [
+  { id:'stand',    name:'حامل عرض فاخر',       desc:'حامل معدني ذهبي للعرض',       price:50  },
+  { id:'box',      name:'صندوق تغليف هدية',     desc:'صندوق فاخر مع ريبون',         price:80  },
+  { id:'xlight',   name:'إضاءة إضافية',         desc:'إضاءة LED تُثبت حول المرآة',  price:120 },
+  { id:'delivery', name:'توصيل وتركيب',          desc:'توصيل لموقع الحفل',           price:150 },
+  { id:'photo',    name:'جلسة تصوير احترافية',   desc:'تصوير المرآة بالقاعة',        price:200 },
+];
+
+// ══════════════════════════════════════════════
+//  🗂  STATE
+// ══════════════════════════════════════════════
+const S = {
+  stack: ['home'],
+  cat: null, prod: null,
+  svc: null,
+  addons: [],
+  text: '',
+  photos: [],
+};
+
+// ══════════════════════════════════════════════
+//  🏁  INIT
+// ══════════════════════════════════════════════
+function init() {
+  document.getElementById('hHall').textContent    = CFG.hallName;
+  document.getElementById('heroHall').textContent = CFG.hallName;
+  document.getElementById('heroDesc').textContent = CFG.heroDesc;
+  document.getElementById('homeFooter').textContent = `نارفيلا × ${CFG.hallName}`;
+  renderCats();
+}
+
+// ══════════════════════════════════════════════
+//  🧭  NAVIGATION
+// ══════════════════════════════════════════════
+function show(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById('v-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+function nav(id) {
+  S.stack.push(id);
+  show(id);
+  updBack();
+}
+function goBack() {
+  if (S.stack.length <= 1) return;
+  S.stack.pop();
+  const prev = S.stack[S.stack.length - 1];
+  if (prev === 'home') {
+    document.body.removeAttribute('data-cat');
+  }
+  show(prev);
+  updBack();
+}
+function updBack() {
+  document.getElementById('backBtn').classList.toggle('gone', S.stack.length <= 1);
+}
+function startOver() {
+  Object.assign(S, { stack:['home'], cat:null, prod:null, svc:null, addons:[], text:'', photos:[] });
+  document.body.removeAttribute('data-cat');
+  show('home');
+  updBack();
+}
+
+// ══════════════════════════════════════════════
+//  🏷  CATEGORIES
+// ══════════════════════════════════════════════
+function renderCats() {
+  document.getElementById('catGrid').innerHTML = CATS.map(c => `
+    <div class="cat-card" onclick="openCat('${c.id}')">
+      <div class="cat-card-img">
+        <img src="${c.img}" alt="${c.name}" loading="lazy" onerror="this.style.display='none'">
+        ${c.saleOnly ? '<div class="cat-sale-tag">للبيع فقط</div>' : ''}
+      </div>
+      <div class="cat-body">
+        <div class="cat-name">${c.name}</div>
+        <div class="cat-desc">${c.desc}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openCat(id) {
+  S.cat = CATS.find(c => c.id === id);
+  // Apply category theme
+  document.body.setAttribute('data-cat', id);
+  document.getElementById('pvhName').textContent = S.cat.name;
+  document.getElementById('pvhDesc').textContent = S.cat.desc;
+  document.getElementById('prodGrid').innerHTML = S.cat.products.map(p => `
+    <div class="prod-card" onclick="openProd('${p.id}')">
+      <div class="prod-card-img">
+        <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">
+      </div>
+      <div class="prod-body">
+        <div class="prod-name">${p.name}</div>
+        <div class="prod-code">${p.code}</div>
+      </div>
+    </div>
+  `).join('');
+  nav('products');
+}
+
+// ══════════════════════════════════════════════
+//  📦  PRODUCT DETAIL
+// ══════════════════════════════════════════════
+function openProd(id) {
+  const p = S.cat.products.find(x => x.id === id);
+  S.prod = p;
+  S.svc  = p.rent === null ? 'purchase' : null;
+  S.addons = [];
+
+  document.getElementById('pdImg').innerHTML =
+    `<img src="${p.img}" alt="${p.name}" onerror="this.style.display='none'">`;
+  document.getElementById('pdPill').textContent = S.cat.name;
+  document.getElementById('pdName').textContent = p.name;
+  document.getElementById('pdCode').textContent = p.code;
+  document.getElementById('pdDesc').textContent = p.desc;
+  renderPrices();
+  nav('product');
+}
+
+function renderPrices() {
+  const p = S.prod;
+  const noRent = p.rent === null;
+  document.getElementById('priceRow').innerHTML = `
+    <div class="price-opt ${!noRent && S.svc==='rental' ? 'sel':''} ${noRent ? 'off':''}"
+         onclick="${noRent ? '' : "pickSvc('rental')"}">
+      <div class="price-opt-ck">✓</div>
+      <div class="price-opt-label">تأجير</div>
+      ${noRent
+        ? '<div class="price-opt-val">—</div><div style="font-size:.62rem;color:#bbb;margin-top:2px">غير متاح</div>'
+        : `<div class="price-opt-val">${p.rent} <span class="price-opt-cur">${CFG.currency}</span></div>`}
+    </div>
+    <div class="price-opt ${S.svc==='purchase' ? 'sel':''}" onclick="pickSvc('purchase')">
+      <div class="price-opt-ck">✓</div>
+      <div class="price-opt-label">شراء</div>
+      <div class="price-opt-val">${p.buy} <span class="price-opt-cur">${CFG.currency}</span></div>
+    </div>
+  `;
+}
+
+function pickSvc(type) {
+  if (type === 'rental' && S.prod.rent === null) return;
+  S.svc = type;
+  renderPrices();
+}
+
+function proceedToCustomize() {
+  if (!S.svc) { alert('يرجى اختيار نوع الخدمة (تأجير أو شراء)'); return; }
+  const isR = S.svc === 'rental';
+  document.getElementById('svcAlert').innerHTML = isR
+    ? `<div class="alert alert-info"><span class="alert-ic">ℹ️</span><div><strong>خدمة تأجير</strong> — النص سيكون على <strong>ملصق شفاف قابل للإزالة</strong> يُطبع خصيصاً لمناسبتك.</div></div>`
+    : `<div class="alert alert-grave"><span class="alert-ic">⚠️</span><div><strong>شراء — حفر دائم</strong> — النص والبيانات ستُحفر نهائياً على المرآة. تأكد من صحة المعلومات.</div></div>`;
+  document.getElementById('mirrorText').value = S.text;
+  renderPhotosGrid();
+  nav('customize');
+}
+
+// ══════════════════════════════════════════════
+//  🎁  ADDONS
+// ══════════════════════════════════════════════
+function openAddons() {
+  document.getElementById('addonsList').innerHTML = ADDONS.map(a => `
+    <div class="addon-row" onclick="toggleAddon('${a.id}')">
+      <div class="addon-ck ${S.addons.includes(a.id)?'on':''}" id="ack-${a.id}">${S.addons.includes(a.id)?'✓':''}</div>
+      <div class="addon-info">
+        <div class="addon-name">${a.name}</div>
+        <div class="addon-desc">${a.desc}</div>
+      </div>
+      <div class="addon-price">+${a.price} ${CFG.currency}</div>
+    </div>
+  `).join('');
+  document.getElementById('addonsModal').classList.add('open');
+}
+function toggleAddon(id) {
+  const i = S.addons.indexOf(id);
+  if (i === -1) S.addons.push(id); else S.addons.splice(i, 1);
+  const el = document.getElementById('ack-' + id);
+  if (el) { el.classList.toggle('on', S.addons.includes(id)); el.textContent = S.addons.includes(id)?'✓':''; }
+}
+function closeAddons() { document.getElementById('addonsModal').classList.remove('open'); }
+
+// ══════════════════════════════════════════════
+//  📷  PHOTOS
+// ══════════════════════════════════════════════
+function handlePhotos(e) {
+  Array.from(e.target.files).forEach(f => {
+    const r = new FileReader();
+    r.onload = ev => { S.photos.push(ev.target.result); renderPhotosGrid(); };
+    r.readAsDataURL(f);
+  });
+  e.target.value = '';
+}
+function removePhoto(i) { S.photos.splice(i,1); renderPhotosGrid(); }
+function renderPhotosGrid() {
+  const g = document.getElementById('photosGrid');
+  if (!g) return;
+  g.innerHTML = S.photos.map((src,i) => `
+    <div class="photo-th">
+      <img src="${src}" alt="صورة ${i+1}">
+      <button class="photo-rm" onclick="removePhoto(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+// ══════════════════════════════════════════════
+//  👁  PREVIEW
+// ══════════════════════════════════════════════
+function goToPreview() {
+  S.text = document.getElementById('mirrorText').value.trim();
+  const p = S.prod, isR = S.svc === 'rental';
+  const basePrice   = isR ? p.rent : p.buy;
+  const addonsTotal = S.addons.reduce((s,id) => s + (ADDONS.find(a=>a.id===id)?.price||0), 0);
+  const total       = basePrice + addonsTotal;
+  const addonsText  = S.addons.length
+    ? S.addons.map(id => ADDONS.find(a=>a.id===id)?.name).join('، ')
+    : 'لا يوجد';
+
+  document.getElementById('previewContent').innerHTML = `
+    <div class="pvw-card">
+      <div class="pvw-ch">تفاصيل المنتج</div>
+      <div class="pvw-row"><span class="pvw-rl">الفئة</span><span class="pvw-rv">${S.cat.name}</span></div>
+      <div class="pvw-row"><span class="pvw-rl">المنتج</span><span class="pvw-rv">${p.name}</span></div>
+      <div class="pvw-row"><span class="pvw-rl">الكود</span><span class="pvw-rv" style="direction:ltr">${p.code}</span></div>
+      <div class="pvw-row">
+        <span class="pvw-rl">نوع الخدمة</span>
+        <span class="pvw-rv">
+          <span class="svc-pill ${isR?'pill-r':'pill-b'}">${isR?'📋 تأجير':'🔖 شراء'}</span>
+        </span>
+      </div>
+    </div>
+    <div class="pvw-card">
+      <div class="pvw-ch">النص على المرآة</div>
+      <div class="pvw-text">${S.text || '<span style="color:#bbb;font-style:normal">لم يُكتب نص</span>'}</div>
+    </div>
+    <div class="pvw-card">
+      <div class="pvw-ch">الإضافات</div>
+      <div class="pvw-row"><span class="pvw-rl">الإضافات المختارة</span><span class="pvw-rv">${addonsText}</span></div>
+    </div>
+    <div class="pvw-card">
+      <div class="pvw-ch">الصور المرفقة</div>
+      ${S.photos.length
+        ? `<div class="pvw-photos">${S.photos.map((s,i)=>`<div class="pvw-ph-th"><img src="${s}" alt="${i+1}"></div>`).join('')}</div>`
+        : '<div class="pvw-no-ph">لم يتم إرفاق صور مرجعية</div>'}
+    </div>
+    <div class="pvw-card">
+      <div class="pvw-ch">التسعير</div>
+      <div class="pvw-row"><span class="pvw-rl">سعر المنتج</span><span class="pvw-rv">${basePrice} ${CFG.currency}</span></div>
+      ${addonsTotal > 0 ? `<div class="pvw-row"><span class="pvw-rl">الإضافات</span><span class="pvw-rv">+${addonsTotal} ${CFG.currency}</span></div>` : ''}
+      <div class="pvw-row" style="font-size:.92rem">
+        <span class="pvw-rl" style="font-weight:700;color:var(--ink)">الإجمالي</span>
+        <span class="pvw-rv" style="color:var(--gold-light)">${total} ${CFG.currency}</span>
+      </div>
+    </div>
+    ${isR
+      ? `<div class="alert alert-info"><span class="alert-ic">ℹ️</span><div>خدمة <strong>تأجير</strong> — النص سيكون على ملصق شفاف قابل للإزالة.</div></div>`
+      : `<div class="alert alert-grave"><span class="alert-ic">⚠️</span><div>خدمة <strong>شراء — حفر دائم</strong>. تأكد من صحة جميع البيانات قبل التأكيد.</div></div>`}
+  `;
+  nav('preview');
+}
+
+// ══════════════════════════════════════════════
+//  ✅  CONFIRM & WHATSAPP
+// ══════════════════════════════════════════════
+function goToConfirm() {
+  document.getElementById('cfNote').innerHTML =
+    `سيُرسل كامل تفاصيل الطلب — نوع الخدمة، المنتج، النص، والإضافات — إلى فريق نارفيلا مباشرةً.`
+    + (S.photos.length > 0
+      ? `<br><br>📎 يوجد <strong>${S.photos.length}</strong> ${S.photos.length===1?'صورة مرفقة':'صور مرفقة'} — أرسلها يدوياً في محادثة واتساب.`
+      : '');
+  nav('confirm');
+}
+
+function sendToWhatsApp() {
+  const p = S.prod, c = S.cat, isR = S.svc === 'rental';
+  const base = isR ? p.rent : p.buy;
+  const addT = S.addons.reduce((s,id)=>s+(ADDONS.find(a=>a.id===id)?.price||0), 0);
+  const addN = S.addons.map(id=>ADDONS.find(a=>a.id===id)?.name).join(' + ') || 'لا يوجد';
+  const lines = [
+    `🪞 طلب جديد — نارفيلا × ${CFG.hallName}`,
+    `━━━━━━━━━━━━━━━━━━`,
+    `📂 الفئة: ${c.name}`,
+    `🏷 المنتج: ${p.name}`,
+    `📋 الكود: ${p.code}`,
+    `💎 نوع الخدمة: ${isR ? 'تأجير — ملصق قابل للإزالة' : 'شراء — حفر دائم'}`,
+    `━━━━━━━━━━━━━━━━━━`,
+    `✍️ النص على المرآة:`,
+    S.text || '(لم يُحدد)',
+    `━━━━━━━━━━━━━━━━━━`,
+    `🎁 الإضافات: ${addN}`,
+    `━━━━━━━━━━━━━━━━━━`,
+    `💰 السعر الأساسي: ${base} ${CFG.currency}`,
+    addT > 0 ? `🎁 الإضافات: +${addT} ${CFG.currency}` : null,
+    `✅ الإجمالي: ${base+addT} ${CFG.currency}`,
+    `━━━━━━━━━━━━━━━━━━`,
+    `🏢 عبر: ${CFG.hallName}`,
+    S.photos.length ? `📎 ملاحظة: سأرسل ${S.photos.length} صورة مرجعية` : null,
+  ].filter(Boolean).join('\n');
+
+  window.open(`https://wa.me/${CFG.whatsapp}?text=${encodeURIComponent(lines)}`, '_blank');
+}
+
+// ── START ──
+init();
+</script>
+</body>
+</html>
